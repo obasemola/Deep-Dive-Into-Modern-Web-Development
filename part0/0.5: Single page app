@@ -1,0 +1,27 @@
+title part0
+participant Browser
+participant Server
+
+note over Browser
+When a user goes to the single page app version of the notes, the following happens:
+end note
+
+
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/spa
+Server->Browser: HTML code
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.css
+Server->Browser: main.css
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/spa.js
+Server->Browser: spa.js
+
+note over Browser
+After browser receives and starts to execute the code in the spa.js document,
+it does the following:
+end note
+
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/data.json
+Server->Browser: json data from the server
+
+note over Browser
+After getting the data back, the event handler in js file
+is executed by the browser and the data(notes) are displayed on the DOM.
