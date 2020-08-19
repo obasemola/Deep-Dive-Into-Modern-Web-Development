@@ -1,0 +1,20 @@
+title part0
+participant Browser
+participant Server
+
+note over Browser,Server
+When a user creates a new note on the single page version of the application,
+the following happens
+end note
+
+Browser->Server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note_spa
+Server->Browser: array of notes
+
+
+note over Browser
+Contrary to the initial version, this time,
+the post request does not send a URL redirect,
+rather it returns an array of notes with the new note included,
+and then rerenders the notes/remains on the same page.
+This is because the new note is sent over to the server as JSON
+by setting the content type as such.
