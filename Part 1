@@ -1,0 +1,27 @@
+participant Browser
+participant Server
+
+note over Browser
+When a user creates a note and submits, the following happens:
+end note
+
+Browser->Server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note
+Server->Browser: URL redirect to notes
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/notes
+Server->Browser: HTML code
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.css
+Server->Browser: main.css
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.js
+Server->Browser: main.js
+
+note over Browser
+After browser receives and starts to execute the code in the main.js document,
+it does the following:
+end note
+
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/data.json
+Server->Browser: json data from the server
+
+note over Browser
+After getting the data back, the event handler in js file
+is executed by the browser and the data(notes) are displayed on the DOM.
