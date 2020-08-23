@@ -8,10 +8,6 @@ const App = (props) => {
   const [mostvotes, setMostVotes] = useState(0);
   const [mostVotesIndex, setMostVotesIndex] = useState(null)
 
-  const handleAnecdoteClick = () => {
-    setSelected(Math.floor(Math.random() * anecdotes.length))
-  }
-
   const handleVoteClick = () => {
     initialArray.forEach((element, index) => {
       if (selected === index) {
@@ -23,6 +19,12 @@ const App = (props) => {
       
     })
     
+  }
+
+  const handleAnecdoteClick = () => {
+    let newSelected = Math.floor(Math.random() * anecdotes.length);
+    setSelected(newSelected)
+    setVotes([...initialArray][newSelected])
   }
 
   return (
