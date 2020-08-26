@@ -1,0 +1,18 @@
+
+  \{^_^}/ hi!
+
+  Loading src/db.json
+  Done
+
+  Resources
+  http://localhost:3001/notes
+
+  Home
+  http://localhost:3001
+
+  Type s + enter at any time to create a snapshot of the database
+  Watching...
+
+  Error reading C:\Users\37258\part1\src\db.json
+[0mGET /notes [32m200[0m 8.626 ms - 419[0m
+Terminate batch job (Y/N)? 
