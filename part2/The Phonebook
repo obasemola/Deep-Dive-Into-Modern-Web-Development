@@ -52,7 +52,9 @@ const App = () => {
   const [ showAll, setShowAll ] = useState(undefined);
 
   const hook = () => {
-    axios.get('http://localhost:3001/persons').then(response => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
       setPersons(response.data)
     })
   }
