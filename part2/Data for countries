@@ -1,0 +1,88 @@
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
+
+const App = () => {
+  const [ country, setCountry ] = useState('');
+  const [ countriesInfo, setCountriesInfo ] = useState([]);
+  const [ dataResponse, setDataResponse ] = useState([]);
+  const [ dataDisplayed, setDataDisplayed ] = useState('')
+
+  const hook = () => {
+    axios.get('https://restcountries.eu/rest/v2/all').then(response => {
+      setCountriesInfo(response.data)
+    })
+  }
+
+  useEffect(hook, []);
+  // console.log(countriesInfo[0]);
+
+  const handleCountryChange = (e) => {
+    setCountry(e.target.value)
+    console.log(country);
+    const found = countriesInfo.findIndex((countryInfo) => {
+      return countryInfo.name.includes(country)
+    })
+
+    if( found === -1 ) {
+      return;
+    } else if ( found > -1 ) {
+      const updatedCountry = countriesInfo.filter((countryInfo) => {
+        return countryInfo.name.includes(country)
+      })
+      setDataResponse(updatedCountry)
+      console.log(dataResponse)
+    }
+ 
+
+    if ( dataResponse.length >  10) {
+
+      setDataDisplayed('Too many matches, specify another filter')
+    } else if ( dataResponse.length < 10 && dataResponse.length > 1 ) {
+      const returnedData = dataResponse.map((data) => {
+        return <p key={data.numericCode}>{data.name}</p>
+      })
+      setDataDisplayed(returnedData)
+      // console.log(dataResponse)
+    } else if ( dataResponse.length === 1 ) {
+      const returnedData = dataResponse.map((data) => {
+ 
+        return <div key={data.numericCode}>
+                <h1>{data.name}</h1>
+                <p>capital {data.capital}</p>
+                <p>population {data.population}</p>
+                <h4>languages</h4>
+                <ul>
+                  {data.languages.map((language) => {
+                    return <li key={data.nativeName}>{language.name}</li>
+                  })}
+                </ul>
+                <img src={data.flag} width="100" height="100"/>
+               </div>
+        
+      })
+      setDataDisplayed(returnedData)
+    } else {
+      setCountry('')
+      setDataDisplayed('')
+    }
+
+
+  }
+
+
+
+  return (
+    <div>
+      <form>
+        find countries
+        <input
+        onChange={handleCountryChange}
+        value={country}>
+        </input>
+      </form>
+      {dataDisplayed}
+    </div>
+  )
+}
+
+export default App
