@@ -11,14 +11,16 @@ const App = () => {
     axios.get('https://restcountries.eu/rest/v2/all').then(response => {
       setCountriesInfo(response.data)
     })
+    handleCountryChange()
   }
 
-  useEffect(hook, []);
+  useEffect(() => {
+    hook()
+  }, [ country, dataResponse.length ])
   // console.log(countriesInfo[0]);
 
-  const handleCountryChange = (e) => {
-    setCountry(e.target.value)
-    console.log(country);
+  const handleCountryChange = () => {
+    // setCountry(e.target.value)
     const found = countriesInfo.findIndex((countryInfo) => {
       return countryInfo.name.includes(country)
     })
@@ -30,7 +32,7 @@ const App = () => {
         return countryInfo.name.includes(country)
       })
       setDataResponse(updatedCountry)
-      console.log(dataResponse)
+
     }
  
 
@@ -61,9 +63,6 @@ const App = () => {
         
       })
       setDataDisplayed(returnedData)
-    } else {
-      setCountry('')
-      setDataDisplayed('')
     }
 
 
@@ -76,7 +75,7 @@ const App = () => {
       <form>
         find countries
         <input
-        onChange={handleCountryChange}
+        onChange={(e) => {setCountry(e.target.value)}}
         value={country}>
         </input>
       </form>
