@@ -14,20 +14,17 @@ const App = () => {
     handleCountryChange()
   }
 
-  useEffect(() => {
-    hook()
-  }, [ country, dataResponse.length ])
-  // console.log(countriesInfo[0]);
 
   const handleCountryChange = () => {
-    // setCountry(e.target.value)
+
     const found = countriesInfo.findIndex((countryInfo) => {
       return countryInfo.name.includes(country)
     })
 
     if( found === -1 ) {
       return;
-    } else if ( found > -1 ) {
+    }
+    else if ( found > -1 ) {
       const updatedCountry = countriesInfo.filter((countryInfo) => {
         return countryInfo.name.includes(country)
       })
@@ -39,13 +36,20 @@ const App = () => {
     if ( dataResponse.length >  10) {
 
       setDataDisplayed('Too many matches, specify another filter')
-    } else if ( dataResponse.length < 10 && dataResponse.length > 1 ) {
+    }
+    else if ( dataResponse.length < 10 && dataResponse.length > 1 ) {
       const returnedData = dataResponse.map((data) => {
-        return <p key={data.numericCode}>{data.name}</p>
+         
+        return <div>
+                <span key={data.numericCode}>{data.name}</span>
+                <button name={data.name}onClick={(e) => {setCountry(e.target.name)}}>show</button>
+               </div>
+        
       })
       setDataDisplayed(returnedData)
       // console.log(dataResponse)
-    } else if ( dataResponse.length === 1 ) {
+    }
+    else if ( dataResponse.length === 1 ) {
       const returnedData = dataResponse.map((data) => {
  
         return <div key={data.numericCode}>
@@ -55,7 +59,7 @@ const App = () => {
                 <h4>languages</h4>
                 <ul>
                   {data.languages.map((language) => {
-                    return <li key={data.nativeName}>{language.name}</li>
+                    return <li key={data.languages.nativeName}>{language.name}</li>
                   })}
                 </ul>
                 <img src={data.flag} width="100" height="100"/>
@@ -63,10 +67,13 @@ const App = () => {
         
       })
       setDataDisplayed(returnedData)
+
     }
 
 
   }
+
+  useEffect(hook, [ country, dataResponse.length ])
 
 
 
