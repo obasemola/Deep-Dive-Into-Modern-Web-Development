@@ -82,8 +82,7 @@ const App = () => {
 
     if( found === -1 ){
 
-      const updatedInfo = persons
-      .concat({
+      const newInfo = {
         name: newName
         .split(' ')
         .map(s => s
@@ -91,11 +90,18 @@ const App = () => {
           .toUpperCase() + s
           .substr(1))
           .join(' '),
-          number: newNumber
-        }) 
-      setPersons(updatedInfo)
-      setNewName('')
-      setNewNumber('')
+        number: newNumber
+        };
+
+      axios
+        .post('http://localhost:3001/persons', newInfo)
+        .then(response => {
+          setPersons(persons.concat(response.data))
+          setNewName('')
+          setNewNumber('')
+        })
+
+
     } else {
 
       alert(`${newName} is already added to phonebook`)
