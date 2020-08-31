@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import personService from './services/persons'
 
 const Filter = ({ newSearch, handleFilter }) => {
   return (
@@ -33,12 +34,15 @@ const PersonForm = ({ updateInfo, handleNameChange, newName, handleNumberChange,
   )
 };
 
-const Persons = ({ infoToShow, persons }) => {
+const Persons = ({ infoToShow, persons, removePerson }) => {
   return (
     <div>
     {infoToShow.map((info) => {
-      info.id = persons.length * Math.random()
-      return <p key={info.id}>{info.name} {info.number}</p>})}
+      return <div key={info.id}>
+              <span>{info.name} {info.number} </span>
+              <button onClick={() => removePerson(info.id, info.name)} id={info.id}>delete</button>
+             </div>
+      })}
 </div>
   )
 }
@@ -52,8 +56,8 @@ const App = () => {
   const [ showAll, setShowAll ] = useState(undefined);
 
   const hook = () => {
-    axios
-      .get('http://localhost:3001/persons')
+    personService
+      .getAll()
       .then(response => {
       setPersons(response.data)
     })
@@ -70,7 +74,7 @@ const App = () => {
 
     e.preventDefault();
 
-    const found =
+    const foundName =
       persons
         .findIndex(person => person
           .name === newName
@@ -80,7 +84,12 @@ const App = () => {
           .substr(1))
           .join(' '));
 
-    if( found === -1 ){
+    const foundNumber =
+      persons
+        .findIndex(person => person
+          .number === newNumber);
+
+    if( foundName === -1 && foundNumber === -1){
 
       const newInfo = {
         name: newName
@@ -93,8 +102,8 @@ const App = () => {
         number: newNumber
         };
 
-      axios
-        .post('http://localhost:3001/persons', newInfo)
+      personService
+        .create(newInfo)
         .then(response => {
           setPersons(persons.concat(response.data))
           setNewName('')
@@ -102,8 +111,27 @@ const App = () => {
         })
 
 
-    } else {
+    } else if (foundName > -1 && persons[foundName].number !== newNumber) {
+      const person = persons[foundName];
+      const id = persons[foundName].id;
+      const updatedPerson = {
+        ...person, number: newNumber
+      }
 
+      personService
+        .update(id, updatedPerson)
+        .then(response => {
+          setPersons(persons.map((person) => {
+            return person.id ? person : response.data
+          }))
+          console.log(persons)
+          setNewName('')
+          setNewNumber('')
+        })
+    } else
+    
+    {
+      console.log(persons[foundName])
       alert(`${newName} is already added to phonebook`)
       setNewName('')
       setNewNumber('')
@@ -140,6 +168,20 @@ const App = () => {
 
   const infoToShow = showAll ? persons.filter(person => person.name.includes(newSearch.split(' ').map(s => s.charAt(0).toUpperCase() + s.substr(1)).join(' ')) || person.name.includes(newSearch)) : persons;
 
+  const removePerson = (id, name) => {
+    if (window.confirm(`Delete ${name}?`)) {
+      personService
+      .remove(id)
+      .then(response => {
+        setPersons(persons.filter((person) => {
+          return person.id !== id
+        }))
+      })
+    } else {
+      return;
+    }
+
+  }
 
 
   return (
@@ -154,7 +196,7 @@ const App = () => {
 
       <h3>Numbers</h3>
 
-      <Persons infoToShow={infoToShow} persons={persons}/>
+      <Persons removePerson={removePerson} infoToShow={infoToShow} persons={persons}/>
 
     </div>
   )
