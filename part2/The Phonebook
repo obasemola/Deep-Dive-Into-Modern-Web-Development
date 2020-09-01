@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import personService from './services/persons'
+import '../index.css'
 
 const Filter = ({ newSearch, handleFilter }) => {
   return (
@@ -54,6 +55,7 @@ const App = () => {
   const [ newNumber, setNewNumber ] = useState('');
   const [ newSearch, setNewSearch] = useState('')
   const [ showAll, setShowAll ] = useState(undefined);
+  const [responseMessage, setResponseMessage] = useState('');
 
   const hook = () => {
     personService
@@ -106,8 +108,14 @@ const App = () => {
         .create(newInfo)
         .then(response => {
           setPersons(persons.concat(response.data))
+          setResponseMessage(`${response.data.name} added`)
+          setTimeout(() => {
+            setResponseMessage('')
+          }, 5000)
           setNewName('')
           setNewNumber('')
+          const some = response.data;
+          return some
         })
 
 
@@ -120,11 +128,12 @@ const App = () => {
 
       personService
         .update(id, updatedPerson)
-        .then(response => {
+        .then(returnedPerson => {
           setPersons(persons.map((person) => {
-            return person.id ? person : response.data
+            return person.id ? person : returnedPerson;
+            console.log(persons)
           }))
-          console.log(persons)
+          
           setNewName('')
           setNewNumber('')
         })
@@ -186,7 +195,10 @@ const App = () => {
 
   return (
     <div>
-      <h2>Phonebook</h2>
+
+      <div className="response" >{responseMessage}</div>
+
+      <h1>Phonebook</h1>
 
       <Filter newSearch={newSearch} handleFilter={handleFilter}/>
 
